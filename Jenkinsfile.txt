@@ -29,6 +29,20 @@ pipeline {
         }
 		//Code Ends for stage Compile
 		
+		//Code starts for stage Unit Test
+        stage('Unit Test') {
+            steps {
+                sh 'mvn test'
+            }	
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+		//Code ends for stage Unit Test
+	
+		
 		//Code starts for stage JaCoCo
 		stage('JaCoCo') {
             steps {
@@ -61,7 +75,8 @@ pipeline {
 		//Code starts for stage Deploy War on Tomcat Server
 		stage('Deploy War on Tomcat Server') {
             steps {
-                sh 'cp /var/jenkins_home/workspace/verity-devops/target/ExpenseApp-1.war /tmp/apache-tomcat-9.0.20/webapps'
+                //sh 'cp /var/jenkins_home/workspace/verity-devops/target/ExpenseApp-1.war /tmp/apache-tomcat-9.0.20/webapps'
+				sh 'cp /var/jenkins_home/workspace/JenkinsPipelineJob/target/ExpenseApp-1.war /tmp/apache-tomcat-9.0.20/webapps'
             }
         }
 		//Code ends for stage Deploy War on Tomcat Server
@@ -73,7 +88,7 @@ pipeline {
             steps {
 				//Change git url below as per your forked github repository URL
 				//git url: 'https://github.com/umangsaltuniv/EMSystemTests.git'
-				git url: 'https://github.com/nipunsharma004/EMSystemTests'
+				git url: 'https://github.com/nipunsharma004/EMSystemTests.git'
             	sh 'mvn -Dtest=ExpenseManagerSystemTest test'
             }
         }
@@ -81,19 +96,7 @@ pipeline {
 
 		
 				
-		//Code starts for stage Unit Test
-        stage('Unit Test') {
-            steps {
-                sh 'mvn test'
-            }	
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
-        }
-		//Code ends for stage Unit Test
-	
+		
 		
 		// ******ALL CODE TO BE ADDED ABOVE THIS COMMENT******
     }
